@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file os2web_contact_form.module
+ * @author Thomas Thune Hansen <tth@bellcom.dk>
+ * @copyright bellcom open source aps
+ */
+
+/*
+ * Implements hook_form_alter()
+ */
+function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
+  // If its the contact form, we add an extra field for the phonenumber
+  if($form_id == 'contact_site_form'){
+    $form['phone'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Phonenumber'),
+      '#required' => TRUE,
+      '#element_validate' => array('element_validate_integer_positive'), 
+    );
+
+    // Reorder form items
+    $order = array('name', 'mail', 'phone', 'subject', 'message', 'copy');
+
+    foreach($order as $key => $value){
+      $form[$value]['#weight'] = $key;
+
+    }
+  }
+}
+
+/*
+ * Implements hook_mail_alter()
+ */
+function os2web_contact_form_mail_alter(&$message){
+  // We need to include the phonumber in the message going out
+  if($message['id'] == 'contact_page_mail'){
+    $message['body'][] = t('Phonenumber'). ':' .  $message['params']['phone'];
+  }
+}
