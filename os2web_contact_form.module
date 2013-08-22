@@ -6,11 +6,52 @@
  */
 
 /*
+ * Implements hook_menu()
+ */
+
+function os2web_contact_form_menu(){
+  $items = array();
+
+  // Admin menu
+  $items['admin/config/os2web_contact_form'] = array(
+    'title' => 'OS2Web contact form',
+    'description' => 'General settings ',
+    'position' => 'right',
+    'weight' => -10,
+    'page callback' => 'system_admin_menu_block_page',
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+    'access arguments' => array('administer site configuration'),
+  );
+
+  $items['admin/config/os2web_contact_form/settings'] = array(
+    'title' => 'OS2web Contact Form',
+    'description' => 'Change settings for contact form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('os2web_contact_form_settings_form'),
+    'access arguments' => array('administer site configuration'),
+  );
+
+  return $items;
+}
+
+/*
  * Implements hook_form_alter()
  */
 function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
   // If its the contact form, we add an extra field for the phonenumber
-  if($form_id == 'contact_site_form'){
+  if($form_id === 'contact_site_form') {
+    // Insert rendered node in contact form
+    $node = node_load(variable_get('os2web_contact_form_nid'), '');
+
+    if(is_object($node)){
+      $node->title = NULL;
+      $form['contact_text'] = array(
+        '#type' => 'item',
+        '#markup' => drupal_render(node_view($node)),
+      );
+    }
+
     $form['phone'] = array(
       '#type' => 'textfield',
       '#title' => t('Phonenumber'),
@@ -19,7 +60,7 @@ function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
     );
 
     // Reorder form items
-    $order = array('name', 'mail', 'phone', 'subject', 'message', 'copy');
+    $order = array('contact_text', 'name', 'mail', 'phone', 'subject', 'message', 'copy');
 
     foreach($order as $key => $value){
       $form[$value]['#weight'] = $key;
@@ -36,4 +77,17 @@ function os2web_contact_form_mail_alter(&$message){
   if($message['id'] == 'contact_page_mail'){
     $message['body'][] = t('Phonenumber'). ':' .  $message['params']['phone'];
   }
+}
+
+/*
+ * Settings form callback
+ */
+function os2web_contact_form_settings_form(){
+  $form['os2web_contact_form_nid'] = array(
+    '#title' => t('Node id for contact page'),
+    '#default_value' => variable_get('os2web_contact_form_nid', 114),
+    '#type' => 'textfield',
+  );
+
+  return system_settings_form($form);
 }
