@@ -83,10 +83,10 @@ function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
       'contact_text',
       'name',
       'mail',
-      'phone',
       'address',
       'zipcode',
       'city',
+      'phone',
       'subject',
       'message',
       'copy'
@@ -107,7 +107,7 @@ function os2web_contact_form_mail_alter(&$message){
   if($message['id'] == 'contact_page_mail'){
     $message['body'][] = t('Phonenumber'). ': ' .  $message['params']['phone'];
     $message['body'][] = t('Address'). ': ' .  $message['params']['address'];
-    $message['body'][] = t('Zipcode'). ': ' .  $message['params']['zipcode'];
+    $message['body'][] = t('Zip Code'). ': ' .  $message['params']['zipcode'];
     $message['body'][] = t('City'). ': ' .  $message['params']['city'];
   }
 }
