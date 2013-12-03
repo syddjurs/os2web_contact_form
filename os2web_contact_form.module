@@ -57,12 +57,16 @@ function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
       '#title' => t('Phonenumber'),
       '#required' => TRUE,
       '#element_validate' => array('element_validate_integer_positive'),
+      '#attributes' => array('placeholder' => t('fx. 12121212')),
+      '#description' => t('The phonenumber where we can reach you.'),
     );
 
     $form['address'] = array(
       '#type' => 'textfield',
       '#title' => t('Address'),
       '#required' => TRUE,
+      '#attributes' => array('placeholder' => t('fx. Hovedgaden 77')),
+      '#description' => t('The address where you are living.'),
     );
 
     $form['zipcode'] = array(
@@ -70,13 +74,24 @@ function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
       '#title' => t('Zip Code'),
       '#required' => TRUE,
       '#element_validate' => array('element_validate_integer_positive'),
+      '#attributes' => array('placeholder' => t('fx. 8410')),
+      '#description' => t('The zipcode in which you are living.'),
     );
 
     $form['city'] = array(
       '#type' => 'textfield',
       '#title' => t('City'),
       '#required' => TRUE,
+      '#attributes' => array('placeholder' => t('fx. Rønde')),
+      '#description' => t('The city in which you are living.'),
     );
+
+    // Add additional descriptions to existing fields.
+    $form['name']['#attributes'] = array('placeholder' => t('fx. Anders Andersen'));
+    $form['mail']['#attributes'] = array('placeholder' => t('fx. dinemail@eksempel.dk'));
+    $form['mail']['#description'] = t('The purpose of this message.');
+    $form['message']['#description'] = t('What are your question? Describe your question/problem here.');
+    $form['copy']['#description'] = t('When this is ticked, you will recieve a receipt of this contact on the email you have entered.');
 
     // Reorder form items
     $order = array(
@@ -94,7 +109,6 @@ function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
 
     foreach($order as $key => $value){
       $form[$value]['#weight'] = $key;
-
     }
   }
 }
