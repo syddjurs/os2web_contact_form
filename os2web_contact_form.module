@@ -89,7 +89,7 @@ function os2web_contact_form_form_alter(&$form,&$form_state, $form_id){
     // Add additional descriptions to existing fields.
     $form['name']['#attributes'] = array('placeholder' => t('fx. Anders Andersen'));
     $form['mail']['#attributes'] = array('placeholder' => t('fx. dinemail@eksempel.dk'));
-    $form['mail']['#description'] = t('The purpose of this message.');
+    $form['subject']['#description'] = t('The purpose of this message.');
     $form['message']['#description'] = t('What are your question? Describe your question/problem here.');
     $form['copy']['#description'] = t('When this is ticked, you will recieve a receipt of this contact on the email you have entered.');
 
